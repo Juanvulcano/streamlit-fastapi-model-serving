@@ -8,17 +8,17 @@ from torchvision import transforms
 
 
 def get_segmentator():
-
+    print("This is triggering the model eval")
     model = torch.hub.load(
         "pytorch/vision:v0.6.0", "deeplabv3_resnet101", pretrained=True
     )
     model.eval()
-
+    print("Model eval done")
     return model
 
 
 def get_segments(model, binary_image, max_size=512):
-
+    print("get_segments triggered")
     input_image = Image.open(io.BytesIO(binary_image)).convert("RGB")
     width, height = input_image.size
     resize_factor = min(max_size / width, max_size / height)
@@ -28,7 +28,7 @@ def get_segments(model, binary_image, max_size=512):
             int(input_image.height * resize_factor),
         )
     )
-
+    print("image resized")
     preprocess = transforms.Compose(
         [
             transforms.ToTensor(),
@@ -45,7 +45,7 @@ def get_segments(model, binary_image, max_size=512):
         output = model(input_batch)["out"][0]
 
     output_predictions = output.argmax(0)
-
+    print("torch used output pred")
     # create a color palette, selecting a color for each class
     palette = torch.tensor([2 ** 25 - 1, 2 ** 15 - 1, 2 ** 21 - 1])
     colors = torch.as_tensor([i for i in range(21)])[:, None] * palette

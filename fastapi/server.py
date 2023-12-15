@@ -18,7 +18,12 @@ app = FastAPI(
 @app.post("/segmentation")
 def get_segmentation_map(file: bytes = File(...)):
     """Get segmentation maps from image file"""
+    print("Api Model is Gay")
     segmented_image = get_segments(model, file)
     bytes_io = io.BytesIO()
     segmented_image.save(bytes_io, format="PNG")
     return Response(bytes_io.getvalue(), media_type="image/png")
+
+@app.get("/")
+def root():
+    return {"status":"ok"}
